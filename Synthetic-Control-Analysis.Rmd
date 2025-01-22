@@ -12,6 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 # Load Packages
 ```{r}
 library(tidyverse)
+library(remotes)
+remotes::install_github("edunford/tidysynth")
+library(tidysynth)
 library(tidysynth)
 library(nlme)
 library(AICcmodavg)
@@ -41,9 +44,34 @@ cities.pool <-cities.pool$City
 city.data <- city.data %>%
   filter(City != "Boston"& City != "Atlanta" & City != "Baltimore" & City != "Houston")%>%
   filter(City %in% cities.pool)
+                                                                      
 ```
 
 # Synthetic Control Analysis: Abundance
+```{r}
+# try in scipi
+library(scpi)
+# dat <- scdata(df = city.data, id.var = "City", time.var = "year", outcome.var = "n.obs45km", period.pre = (2015:2021), period.post = (2022:2023), unit.tr = "Philadelphia", unit.co = c("Chicago", "Phoenix", "Los Angeles",  "Riverside", "Sacramento", "San Diego","San Francisco", "San Jose",  "Santa Ana", "Denver", "Jacksonville", "Orlando", "Tampa", "Detroit" , "Albuquerque", "Charlotte", "Raleigh", "Cincinnati", "Cleveland", "Columbus" ,"Austin",  
+#  "Dallas", "Fort Worth", "San Antonio", "Seattle", "Milwaukee"))
+
+dat <- as.data.frame(city.data)
+dat$year = as.numeric(dat$year)
+
+dat2 <- scdata(df = dat, id.var = "City", time.var = "year", outcome.var = "n.obs45km", period.pre = (2015:2021), period.post = (2022:2023), unit.tr = "Philadelphia", unit.co = setdiff(unique(city.data$City), "Philadelphia"), constant = TRUE, cointegrated.data = TRUE, features = NULL, cov.adj = NULL)
+
+#trying by relabeling the variables first
+unit.tr  <- "Philadelphia"  # Treated unit (in terms of id.var)
+period.post <- (2022:2023)  
+period.pre <- seq(from = 2015, to = 2021, by = 1) # (2015:2021) 
+
+dat3 <- scdata(df = dat, id.var = "City", time.var = "year", outcome.var = "n.obs45km", period.pre = "period.pre", period.post = "period.post", unit.tr = "Philadelphia" , unit.co = setdiff(unique(city.data$City), "Philadelphia"), constant = TRUE, cointegrated.data = TRUE, features = NULL, cov.adj = NULL)
+
+#If the above works then:
+est.si  <- scest(data = dat2, w.constr = list(name="simplex"))
+
+#issues - email Please email: scpi_pkg@googlegroups.com
+
+```
 
 ## Creating the Synthetic Control
 * Creating the control objects
