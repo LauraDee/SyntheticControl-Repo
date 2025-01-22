@@ -68,6 +68,8 @@ period.pre <- seq(from = 2015, to = 2021, by = 1) # (2015:2021)
 
 dat3 <- scdata(df = dat, id.var = "City", time.var = "year", outcome.var = "n.obs45km", period.pre = "period.pre", period.post = "period.post", unit.tr = "Philadelphia" , unit.co = setdiff(unique(city.data$City), "Philadelphia"), constant = TRUE, cointegrated.data = TRUE, features = NULL, cov.adj = NULL)
 
+dat3 <- scdata(df = dat, id.var = "City", time.var = "year", outcome.var = "n.obs45km", period.pre = "period.pre", period.post = "period.post", unit.tr = "Philadelphia" , unit.co = setdiff(unique(city.data$City), "Philadelphia"), constant = TRUE, cointegrated.data = TRUE, features = NULL, cov.adj = NULL)
+
 #If the above works then:
 est.si  <- scest(data = dat2, w.constr = list(name="simplex"))
 
