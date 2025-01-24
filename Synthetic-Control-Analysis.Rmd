@@ -21,6 +21,8 @@ library(AICcmodavg)
 library(purrr)
 library(ggpubr)
 library(microsynth)
+library(scpi)
+library(data.table)
 ```
 
 # Load in Data
@@ -50,13 +52,11 @@ city.data <- city.data %>%
 # Synthetic Control Analysis: Abundance
 ```{r}
 # try in scipi
-library(scpi)
-library(data.table)
 # dat <- scdata(df = city.data, id.var = "City", time.var = "year", outcome.var = "n.obs45km", period.pre = (2015:2021), period.post = (2022:2023), unit.tr = "Philadelphia", unit.co = c("Chicago", "Phoenix", "Los Angeles",  "Riverside", "Sacramento", "San Diego","San Francisco", "San Jose",  "Santa Ana", "Denver", "Jacksonville", "Orlando", "Tampa", "Detroit" , "Albuquerque", "Charlotte", "Raleigh", "Cincinnati", "Cleveland", "Columbus" ,"Austin",  
 #  "Dallas", "Fort Worth", "San Antonio", "Seattle", "Milwaukee"))
 dat <- as.data.table(city.data)
 dat <- as.data.frame(city.data)
-dat = dat[year >= 2015,]
+# dat = dat[year >= 2015,]
 dat$year = as.numeric(dat$year)
 
 dat2 <- scdata(df = dat, id.var = "City", time.var = "year", outcome.var = "n.obs45km", period.pre = (2015:2021), period.post = (2022:2023), unit.tr = "Philadelphia", unit.co = setdiff(unique(dat$City), "Philadelphia"), constant = TRUE, cointegrated.data = TRUE, features = NULL, cov.adj = NULL)
